@@ -5,7 +5,8 @@ import (
 	"strings"
 )
 
-var conferenceName = "Go Conference" // var conferenceName = "Go Conference" would be the same
+var conferenceName = "Go Conference"
+
 const conferenceTickets uint = 50
 
 var remainingTickets = conferenceTickets
@@ -58,45 +59,49 @@ func askUserData() (string, string, string, uint) {
 		firstName, lastName, email string
 		userTickets                uint
 	)
-	firstNameCorrect, lastNameCorrect, emailCorrect, userTicketsCorrect := false, false, false, false
 
-	for !firstNameCorrect {
+	for {
 		fmt.Println("Enter your first name")
 		fmt.Scan(&firstName)
-		firstNameCorrect = len(firstName) >= 2
 
-		if !firstNameCorrect {
-			fmt.Println("First name is not valid. Try again, please")
+		if len(firstName) >= 2 {
+			break
 		}
+
+		fmt.Println("First name is not valid. Try again, please")
 	}
 
-	for !lastNameCorrect {
+	for {
 		fmt.Println("Enter your last name")
 		fmt.Scan(&lastName)
-		lastNameCorrect = len(lastName) >= 2
 
-		if !lastNameCorrect {
-			fmt.Println("Last name is not valid. Try again, please")
+		if len(lastName) >= 2 {
+			break
 		}
+
+		fmt.Println("Last name is not valid. Try again, please")
 	}
 
-	for !emailCorrect {
+	for {
 		fmt.Println("Enter your email")
 		fmt.Scan(&email)
-		emailCorrect = strings.Contains(email, "@")
 
-		if !emailCorrect {
-			fmt.Println("Email is not valid. Try again, please")
+		if strings.Contains(email, "@") {
+			break
 		}
+
+		fmt.Println("Email is not valid. Try again, please")
 	}
 
-	for !userTicketsCorrect {
+	for {
 		fmt.Println("Enter number of tickets")
 		fmt.Scan(&userTickets)
-		userTicketsCorrect = remainingTickets >= userTickets
-		if !userTicketsCorrect {
-			fmt.Printf("You can not book %v number of tickets. It are only %v tickets available\n", remainingTickets, userTickets)
+
+		if remainingTickets >= userTickets {
+			break
 		}
+
+		fmt.Printf("You can not book %v number of tickets. It are only %v tickets available\n", remainingTickets, userTickets)
 	}
 
 	return firstName, lastName, email, userTickets
