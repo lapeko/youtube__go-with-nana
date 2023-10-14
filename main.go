@@ -5,6 +5,8 @@ import (
 	"booking-app/models"
 	"fmt"
 	"strings"
+	"sync"
+	"time"
 )
 
 var conferenceName = "Go Conference"
@@ -12,8 +14,8 @@ var conferenceName = "Go Conference"
 const conferenceTickets uint = 50
 
 var remainingTickets = conferenceTickets
-
 var orders []models.Order
+var wg = sync.WaitGroup{}
 
 func main() {
 	welcome()
@@ -22,13 +24,15 @@ func main() {
 		orders = append(orders, order)
 		remainingTickets -= order.UserTickets
 
-		outputResult(order)
+		wg.Add(1)
+		go outputResult(remainingTickets, orders, order)
 
 		if remainingTickets == 0 {
 			fmt.Println("Selling stops. No available remaining tickets")
 			break
 		}
 	}
+	wg.Wait()
 }
 
 func welcome() {
@@ -38,13 +42,15 @@ func welcome() {
 	fmt.Println("Get your tickets here to attend")
 }
 
-func outputResult(order models.Order) {
+func outputResult(remainingTickets uint, orders []models.Order, order models.Order) {
+	time.Sleep(30 * time.Second)
 	fmt.Printf("orders: %v\n", orders)
 	fmt.Printf("Type of orders: %T\n", orders)
 	fmt.Printf("Length of orders: %v\n", len(orders))
 	fmt.Printf("Thank you %v for boocking %v tickets. You'll receive a confirmation email at %v.\n", orders[len(orders)-1], order.UserTickets, order.Email)
 	fmt.Printf("%v tickets are remaining for %v\n", remainingTickets, conferenceName)
 	fmt.Printf("There are all names of bookings: %v\n", helpers.GetFirstNames(orders))
+	wg.Done()
 }
 
 func askOrderData() models.Order {
