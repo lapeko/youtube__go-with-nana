@@ -3,6 +3,7 @@ package main
 import (
 	"booking-app/helpers"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -13,16 +14,19 @@ const conferenceTickets uint = 50
 var remainingTickets = conferenceTickets
 
 // var bookings [conferenceTickets]string
-var bookings []string
+var bookings = make([]map[string]string, 0)
 
 func main() {
 	welcome()
 	for {
-		firstName, lastName, email, userTickets := askUserData()
-		bookings = append(bookings, firstName+" "+lastName)
+		orderDataMap := askOrderData()
+		bookings = append(bookings, orderDataMap)
+		userTicketsString, _ := orderDataMap["userTickets"]
+		userTickets64, _ := strconv.ParseUint(userTicketsString, 10, 64)
+		userTickets := uint(userTickets64)
 		remainingTickets -= userTickets
 
-		outputResult(email, userTickets)
+		outputResult(orderDataMap["email"], userTickets)
 
 		if remainingTickets == 0 {
 			fmt.Println("Selling stops. No available remaining tickets")
@@ -47,7 +51,7 @@ func outputResult(email string, userTickets uint) {
 	fmt.Printf("There are all names of bookings: %v\n", helpers.GetFirstNames(bookings))
 }
 
-func askUserData() (string, string, string, uint) {
+func askOrderData() map[string]string {
 	var (
 		firstName, lastName, email string
 		userTickets                uint
@@ -97,5 +101,11 @@ func askUserData() (string, string, string, uint) {
 		fmt.Printf("You can not book %v number of tickets. It are only %v tickets available\n", remainingTickets, userTickets)
 	}
 
-	return firstName, lastName, email, userTickets
+	orderMap := make(map[string]string)
+	orderMap["firstName"] = firstName
+	orderMap["lastName"] = lastName
+	orderMap["email"] = email
+	orderMap["userTickets"] = strconv.Itoa(int(userTickets))
+
+	return orderMap
 }
