@@ -1,6 +1,7 @@
 package main
 
 import (
+	"booking-app/helpers"
 	"fmt"
 	"strings"
 )
@@ -37,21 +38,13 @@ func welcome() {
 	fmt.Println("Get your tickets here to attend")
 }
 
-func getFirstNames(fullNames []string) []string {
-	var firstNames []string
-	for _, fullName := range bookings {
-		firstNames = append(firstNames, strings.Fields(fullName)[0])
-	}
-	return firstNames
-}
-
 func outputResult(email string, userTickets uint) {
 	fmt.Printf("bookings: %v\n", bookings)
 	fmt.Printf("Type of bookings: %T\n", bookings)
 	fmt.Printf("Length of bookings: %v\n", len(bookings))
 	fmt.Printf("Thank you %v for boocking %v tickets. You'll receive a confirmation email at %v.\n", bookings[len(bookings)-1], userTickets, email)
 	fmt.Printf("%v tickets are remaining for %v\n", remainingTickets, conferenceName)
-	fmt.Printf("There are all names of bookings: %v\n", getFirstNames(bookings))
+	fmt.Printf("There are all names of bookings: %v\n", helpers.GetFirstNames(bookings))
 }
 
 func askUserData() (string, string, string, uint) {
